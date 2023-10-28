@@ -9,16 +9,20 @@ Freal = [[x.real for x in line] for line in F]
 Fimag = [[x.imag for x in line] for line in F]
 
 
-# for real,imag in zip(Freal,Fimag):
-#     fig, axs = plt.subplots(2)
-#     axs[0].stem(real)
-#     axs[1].stem(imag)
-#     plt.show()
+fig, axs = plt.subplots(16,figsize=(6,50))
+
+for i,(real,imag) in enumerate(zip(Freal,Fimag)):
+    axs[2 * i].stem(real,'r')
+    axs[2 * i + 1].stem(imag,'g')
+    
+plt.show()
 
 Fh = np.array([[x.real - 1j*x.imag for x in line] for line in F.T])
 
 test = np.dot(F,Fh) -  N * np.identity(N)
 error = np.linalg.norm(test)
 print(test)
-print(f"Error is {error}")
+
+assert error < 1e-6
+print(f"Error is {error}") # ~ 2e-14
 
