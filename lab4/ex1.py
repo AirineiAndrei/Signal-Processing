@@ -20,7 +20,7 @@ def useNumpy(N):
 mydft = []
 npfft = []
 
-dimensions = [128, 256, 512, 1024, 2048, 4096, 8192,8192*2]
+dimensions = [128, 256, 512, 1024, 2048, 4096, 8192]
 
 for N in dimensions:
     start = time.time()
