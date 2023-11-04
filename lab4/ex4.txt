@@ -1,0 +1,1 @@
+avem nevoie de esantionare la 400Hz (2 * 200 de doua ori frecventa maxima pe care dorim sa o analizam)
