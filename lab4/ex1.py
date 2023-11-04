@@ -22,6 +22,7 @@ npfft = []
 
 dimensions = [128, 256, 512, 1024, 2048, 4096, 8192]
 
+# time.time() has 15 ms accuracy on windows, run in linux to get this plot
 for N in dimensions:
     start = time.time()
     myFourier(N)
