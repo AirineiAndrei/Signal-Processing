@@ -17,8 +17,8 @@ def do_fft(x):
     X = X[:N//2]
     f = Fs*np.linspace(0,N/2,N//2)/N
 
-    # plt.plot(f,X)
-    # plt.show()
+    plt.plot(f,X)
+    plt.show()
     return (f,X)
 
 # e 
@@ -45,9 +45,29 @@ print(top * (60 * 60 * 24 * 365))
 
 start = 6602
 onemonth = x[start:start + 24 * 30]
+#h
+
+#presupun ca avem niste date in timp legate de variati traficului in timp, ie freceventele data de fft pe tot semnalul de 2 ani
+# ne putem da seama de perioada din an din care face parte semnalul din frecventa analizand cum se modifica acesta pe parcursul anului
+# alternativ putem incerca sa facem mai multe potriviri la diferite perioade din frecventele dominante
+# daca avem tot semnalul de baza putem vedea de unde e aceasta subsec 
 
 plt.plot(onemonth)
 plt.show()
-
-
 # i
+
+x = onemonth
+N = len(x)
+X = np.fft.fft(x)
+
+f = Fs*np.linspace(0,N/2,N//2)/N
+print(f[-20:])
+bound = 1 / (60 * 60 * 24) #filtrez frecventele la nivel de zile, semnalul va fii mai smooth dar va urma aprox aceiasi forma
+print(bound)
+cutoff =  np.argmax(f > bound)
+X[cutoff:-cutoff] = 0
+
+filtered = np.fft.ifft(X)
+plt.plot(filtered)
+plt.show()
+
