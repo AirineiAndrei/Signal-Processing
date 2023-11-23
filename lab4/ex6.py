@@ -10,7 +10,10 @@ groupsize = len(data) // 200
 
 groups = np.array([data[x:x+groupsize] for x in range(0,len(data),len(data)//200)])
 
-ffts = np.array([10 * np.log(np.abs(np.fft.fft(x))) for x in groups]).T
+ffts = np.array([20 * np.log(np.abs(np.fft.fft(x))) for x in groups]).T
+
+ffts = ffts[:ffts.shape[0] // 2]
+# print(ffts.shape)
 
 plt.figure(figsize=(10,2))
 plt.imshow(ffts, aspect='auto',cmap='plasma')

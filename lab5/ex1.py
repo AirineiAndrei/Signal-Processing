@@ -68,6 +68,7 @@ cutoff =  np.argmax(f > bound)
 X[cutoff:-cutoff] = 0
 
 filtered = np.fft.ifft(X)
+plt.plot(x)
 plt.plot(filtered)
 plt.show()
 
