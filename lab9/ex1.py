@@ -1,6 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.metrics import mean_squared_error
+from statsmodels.tsa.arima.model import ARIMA
+
 
 N=1000
 t = np.linspace(0,1,N)
@@ -43,4 +45,36 @@ plt.plot(t,serie)
 plt.plot(t[1:],exponential_average)
 plt.show()
 
+
+# c
+ 
+ #????
+
+
+# d
+train_amount = (N * 9) // 10
+train = serie[:train_amount]
+test = serie[train_amount:]
+
+q = 10
+
+history = list(train.copy())
+pred = list()
+
+# https://machinelearningmastery.com/arima-for-time-series-forecasting-with-python/
+print(train_amount)
+for tst in range(len(test)):
+    model = ARIMA(history, order=(5,1,0))
+    model_fit = model.fit()
+    output = model_fit.forecast()
+    yhat = output[0]
+    pred.append(yhat)
+    obs = test[tst]
+    history.append(obs)
+    # print('predicted=%f, expected=%f' % (yhat, obs))
+
+
+plt.plot(t,serie)    
+plt.plot(t[train_amount:],pred)
+plt.show()
 
