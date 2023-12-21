@@ -1,3 +1,4 @@
+from functools import lru_cache
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.metrics import mean_squared_error
@@ -37,18 +38,78 @@ for alpha in np.arange(0,1,0.001):
 
 plt.yscale('log')
 plt.plot(errs)
+plt.savefig(f"./result/berr.pdf", format="pdf")
 plt.show()
 
 print(f"best alpha is {balpha}")
 exponential_average = EMA(balpha)
 plt.plot(t,serie)
 plt.plot(t[1:],exponential_average)
+plt.savefig(f"./result/b.pdf", format="pdf")
 plt.show()
 
 
 # c
  
- #????
+@lru_cache(maxsize=None)
+def get_noise(size):
+    return np.random.normal(size=size)
+
+train_amount = (N * 8) // 10
+train = serie[:train_amount]
+test = serie[train_amount:]
+mean = train.mean()
+
+
+def train_ma(q):
+    noise = get_noise(len(train) + q)
+
+    # so we have a system only in theta
+    y = train - noise[q:] - mean
+    n = y.shape[0]
+
+    errMat = np.zeros((n,q))
+    for i in range(n):
+        errMat[i] = noise[i+q:i:-1]
+    
+    theta, _, _, _  = np.linalg.lstsq(errMat,y,rcond=None)
+    return theta
+
+def train_predict_ma(q):    
+    theta = train_ma(q)
+
+    # print(theta.shape)
+    serie_error = get_noise(N + q)
+    pred = []
+    for i in range(len(test)):
+        indx = i + len(train) - 1
+        # print(indx,indx + q,serie_error[indx:indx+q].shape)
+        yhat = serie_error[indx+q:indx:-1] @ theta
+        yhat += mean + serie_error[i]
+        pred.append(yhat)
+    return np.array(pred)
+
+bq = 0
+berror = np.Infinity
+errs = []
+
+for q in range(1,500):
+    pred = train_predict_ma(q)
+    error = mean_squared_error(test,pred)
+    # print(f"for q={q} error is  {error}")
+    errs.append(error)
+    if error < berror:
+        berror = error
+        bq = q
+
+print(f"best q is {bq} error {berror}")
+pred = train_predict_ma(bq)
+
+plt.plot(t,serie)    
+plt.plot(t[train_amount:],pred)
+plt.savefig(f"./result/c.pdf", format="pdf")
+plt.show()
+
 
 
 # d
@@ -76,5 +137,7 @@ for tst in range(len(test)):
 
 plt.plot(t,serie)    
 plt.plot(t[train_amount:],pred)
+plt.savefig(f"./result/d.pdf", format="pdf")
+
 plt.show()
 
